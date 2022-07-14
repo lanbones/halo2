@@ -6,6 +6,10 @@ and this project adheres to Rust's notion of
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- `halo2::proofs::circuit`
+  - `VirtualCells`
+    - `query_any` now panics if a non-`cur` `Rotation` is used with the
+      `Column<Fixed>` variant.
 
 ## [0.2.0] - 2022-06-23
 ### Added
