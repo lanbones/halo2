@@ -1002,6 +1002,23 @@ impl<F: Field> ConstraintSystem<F> {
         self.permutation.add_column(column);
     }
 
+    /// Add a lookup argument for some input expressions.
+    ///
+    /// `table_map` returns a map between two input expressions that are need to match.
+    pub fn lookup_any(
+        &mut self,
+        table_map: impl FnOnce(&mut VirtualCells<'_, F>) -> Vec<(Expression<F>, Expression<F>)>,
+    ) -> usize {
+        let mut cells = VirtualCells::new(self);
+        let table_map = table_map(&mut cells);
+
+        let index = self.lookups.len();
+
+        self.lookups.push(lookup::Argument::new(table_map));
+
+        index
+    }
+
     /// Add a lookup argument for some input expressions and table columns.
     ///
     /// `table_map` returns a map between input expressions and the table columns
