@@ -280,6 +280,9 @@ where
     )?;
 
     let mut fixed = batch_invert_assigned(assembly.fixed);
+
+    println!("pkgen1");
+
     let (cs, selector_polys) = cs.compress_selectors(assembly.selectors);
     fixed.extend(
         selector_polys
@@ -287,20 +290,25 @@ where
             .map(|poly| vk.domain.lagrange_from_vec(poly)),
     );
 
+    println!("pkgen2");
+
     let fixed_polys: Vec<_> = fixed
         .iter()
         .map(|poly| vk.domain.lagrange_to_coeff(poly.clone()))
         .collect();
 
+    println!("pkgen3");
     let fixed_cosets = fixed_polys
         .iter()
         .map(|poly| vk.domain.coeff_to_extended(poly.clone()))
         .collect();
 
+    println!("pkgen4");
     let permutation_pk = assembly
         .permutation
         .build_pk(params, &vk.domain, &cs.permutation);
 
+    println!("pkgen5");
     // Compute l_0(X)
     // TODO: this can be done more efficiently
     let mut l0 = vk.domain.empty_lagrange();
@@ -308,6 +316,7 @@ where
     let l0 = vk.domain.lagrange_to_coeff(l0);
     let l0 = vk.domain.coeff_to_extended(l0);
 
+    println!("pkgen5");
     // Compute l_blind(X) which evaluates to 1 for each blinding factor row
     // and 0 otherwise over the domain.
     let mut l_blind = vk.domain.empty_lagrange();
@@ -317,6 +326,7 @@ where
     let l_blind = vk.domain.lagrange_to_coeff(l_blind);
     let l_blind = vk.domain.coeff_to_extended(l_blind);
 
+    println!("pkgen6");
     // Compute l_last(X) which evaluates to 1 on the first inactive row (just
     // before the blinding factors) and 0 otherwise over the domain
     let mut l_last = vk.domain.empty_lagrange();
@@ -324,6 +334,7 @@ where
     let l_last = vk.domain.lagrange_to_coeff(l_last);
     let l_last = vk.domain.coeff_to_extended(l_last);
 
+    println!("pkgen7");
     // Compute l_active_row(X)
     let one = C::Scalar::one();
     let mut l_active_row = vk.domain.empty_extended();
@@ -334,9 +345,11 @@ where
         }
     });
 
+    println!("pkgen8");
     // Compute the optimized evaluation data structure
     let ev = Evaluator::new(&vk.cs);
 
+    println!("pkgen9");
     Ok(ProvingKey {
         vk,
         l0,

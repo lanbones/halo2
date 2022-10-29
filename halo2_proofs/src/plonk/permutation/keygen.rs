@@ -182,6 +182,7 @@ impl Assembly {
         let mut permutations = vec![];
         let mut polys = vec![];
         let mut cosets = vec![];
+        println!("columns {}", p.columns.len());
         for i in 0..p.columns.len() {
             // Computes the permutation polynomial based on the permutation
             // description in the assembly.
